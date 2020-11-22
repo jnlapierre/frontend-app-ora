@@ -1,14 +1,14 @@
 import React from 'react';
 import SummaryTable from './summary-table/SummaryTable';
 import DataTable from './data-table/DataTable';
-import { oraDataShape } from '../data/constants';
+import { oraDataShape, oraSummaryDataShape } from '../data/constants';
 
-function OraDashboard({ data }) {
+function OraDashboard({ data, summary }) {
   return (
     <main>
       <div className="container-fluid">
         <h1>Open Responses</h1>
-        <SummaryTable />
+        <SummaryTable data={summary} />
         <DataTable data={data} />
       </div>
     </main>
@@ -16,11 +16,8 @@ function OraDashboard({ data }) {
 }
 
 OraDashboard.propTypes = {
-  data: oraDataShape,
-};
-
-OraDashboard.defaultProps = {
-  data: {},
+  data: oraDataShape.isRequired,
+  summary: oraSummaryDataShape.isRequired,
 };
 
 export default OraDashboard;

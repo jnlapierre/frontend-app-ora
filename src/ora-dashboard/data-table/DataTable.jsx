@@ -11,8 +11,14 @@ function DataTable({ intl, data }) {
   const { courseId } = useParams();
   const dispatch = useDispatch();
   useEffect(() => {
-    Object.keys(data).map((blockId) => data[blockId].status || dispatch(fetchOraReports(courseId, blockId)));
+    if (Object.keys(data).length > 0) {
+      const blockId = Object.keys(data)[0];
+      if (!data[blockId].status) {
+        dispatch(fetchOraReports(courseId, blockId));
+      }
+    }
   }, [courseId, data]);
+
   return (
     <table className="table">
       <thead>
