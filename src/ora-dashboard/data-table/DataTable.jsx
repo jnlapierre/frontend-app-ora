@@ -6,6 +6,7 @@ import { useParams } from 'react-router';
 import messages from './messages';
 import { fetchOraReports } from '../data/thunks';
 import { oraDataShape } from '../../data/constants';
+import EmbedORAModal from '../embed-ora-modal/EmbedORAModal';
 
 /**
  * Sort implementation for Paragon Table
@@ -38,7 +39,7 @@ function DataTable({ intl, data }) {
   }, [courseId, data]);
 
   // create a copy of data for sortable Table
-  const sortableData = Object.values(data).slice();
+  const sortableData = Object.values(data).slice().map(item => ({ ...item, actions: (<EmbedORAModal usageKey={item.id} title={item.name} buttonText="Manage" />) }));
 
   // define Table columns
   const columns = [
@@ -87,20 +88,31 @@ function DataTable({ intl, data }) {
       key: 'done',
       columnSortable: true,
     },
+    {
+      label: '',
+      key: 'actions',
+    },
   ];
 
+  console.log(sortableData.map(i => i.id));
+
   return (
-    <Table
-      data={sortableData}
-      columns={columns.map(column => ({
-        ...column,
-        onSort(direction) {
-          console.log('Sort in direction ', direction, column);
-          sortableData.sort((firstElement, secondElement) => sort(firstElement, secondElement, column.key, direction));
-        },
-      }))}
-      tableSortable
-    />
+    <div>
+      <Table
+        data={sortableData}
+        columns={columns.map(column => ({
+          ...column,
+          onSort(direction) {
+            console.log('Sort in direction ', direction, column);
+            sortableData.sort(
+              (firstElement, secondElement) => sort(firstElement, secondElement, column.key, direction),
+            );
+          },
+        }))}
+        tableSortable
+      />
+      {/* {iframes} */}
+    </div>
   );
 }
 DataTable.propTypes = {
