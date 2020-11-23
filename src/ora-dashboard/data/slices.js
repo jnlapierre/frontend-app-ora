@@ -64,23 +64,21 @@ function oraBlockStatisticsFromPayload(blockIds, payload) {
 function prepareStatisticsSummary(data) {
   const dataKeys = Object.keys(data);
   const dataItemArr = dataKeys.map((key) => data[key]);
-  const sumByKey = (key) => dataItemArr.map((item) => item[key]).reduce((result, val) => result + val, 0);
+
+  const sumByKey = (key) => dataItemArr
+    .map((item) => (item[key] ? item[key] : 0))
+    .reduce((result, val) => result + val, 0);
+
   const fields = ['total', 'training', 'peer', 'self', 'waiting', 'staff', 'done'];
   const summaryData = {
     units: dataKeys.length,
     assessments: dataKeys.length,
   };
 
-  if (dataKeys.length > 0 && data[dataKeys[0]].status === RequestStatus.SUCCESSFUL) {
-    fields.forEach(field => {
-      summaryData[field] = sumByKey(field);
-    });
-  } else if (dataKeys.length === 0) {
-    // there is no ORA block in the course.
-    fields.forEach(field => {
-      summaryData[field] = 0;
-    });
-  }
+  fields.forEach(field => {
+    summaryData[field] = sumByKey(field);
+  });
+
   return summaryData;
 }
 

@@ -1,57 +1,53 @@
 import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
 import React from 'react';
+import { Table } from '@edx/paragon';
 import messages from './messages';
-import LoadingOrValue from '../../components/value-or-loading/ValueOrLoading';
 import { oraSummaryDataShape } from '../../data/constants';
 
 function SummaryTable({ intl, data }) {
+  const columns = [
+    {
+      label: intl.formatMessage(messages.units),
+      key: 'units',
+    },
+    {
+      label: intl.formatMessage(messages.assessments),
+      key: 'assessments',
+    },
+    {
+      label: intl.formatMessage(messages.total_responses),
+      key: 'total',
+    },
+    {
+      label: intl.formatMessage(messages.training),
+      key: 'training',
+    },
+    {
+      label: intl.formatMessage(messages.peer),
+      key: 'peer',
+    },
+    {
+      label: intl.formatMessage(messages.self),
+      key: 'self',
+    },
+    {
+      label: intl.formatMessage(messages.waiting),
+      key: 'waiting',
+    },
+    {
+      label: intl.formatMessage(messages.staff),
+      key: 'staff',
+    },
+    {
+      label: intl.formatMessage(messages.final_grade_received),
+      key: 'done',
+    },
+  ];
   return (
-    <table className="table">
-      <thead>
-        <tr>
-          <th>
-            {intl.formatMessage(messages.units)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.assessments)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.total_responses)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.training)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.peer)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.self)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.waiting)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.staff)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.final_grade_received)}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><LoadingOrValue value={data.units} /></td>
-          <td><LoadingOrValue value={data.assessments} /></td>
-          <td><LoadingOrValue value={data.total} /></td>
-          <td><LoadingOrValue value={data.training} /></td>
-          <td><LoadingOrValue value={data.peer} /></td>
-          <td><LoadingOrValue value={data.self} /></td>
-          <td><LoadingOrValue value={data.waiting} /></td>
-          <td><LoadingOrValue value={data.staff} /></td>
-          <td><LoadingOrValue value={data.done} /></td>
-        </tr>
-      </tbody>
-    </table>
+    <Table
+      data={[data]}
+      columns={columns}
+    />
   );
 }
 SummaryTable.propTypes = {
