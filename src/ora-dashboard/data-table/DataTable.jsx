@@ -40,7 +40,7 @@ function DataTable({ intl, data }) {
 
   // create a copy of data for sortable Table
   const sortableData = Object.values(data).slice().map(item => {
-    const action = item.staff > 0 ? (<EmbedORAModal usageKey={item.id} title={item.name} buttonText="Manage" />) : <></>;
+    const action = <EmbedORAModal usageKey={item.id} title={item.name} buttonText="Manage" />;
     return { ...item, actions: action };
   });
 
