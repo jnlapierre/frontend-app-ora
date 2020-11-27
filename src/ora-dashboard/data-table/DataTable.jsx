@@ -15,7 +15,7 @@ import EmbedORAModal from '../embed-ora-modal/EmbedORAModal';
  * @param {string} key
  * @param {string} direction
  */
-const sort = function sort(firstElement, secondElement, key, direction) {
+function sort(firstElement, secondElement, key, direction) {
   const directionIsAsc = direction === 'asc';
 
   if (firstElement[key] > secondElement[key]) {
@@ -24,7 +24,7 @@ const sort = function sort(firstElement, secondElement, key, direction) {
     return directionIsAsc ? -1 : 1;
   }
   return 0;
-};
+}
 
 function DataTable({ intl, data }) {
   const { courseId } = useParams();
@@ -39,7 +39,10 @@ function DataTable({ intl, data }) {
   }, [courseId, data]);
 
   // create a copy of data for sortable Table
-  const sortableData = Object.values(data).slice().map(item => ({ ...item, actions: (<EmbedORAModal usageKey={item.id} title={item.name} buttonText="Manage" />) }));
+  const sortableData = Object.values(data).slice().map(item => {
+    const action = item.staff > 0 ? (<EmbedORAModal usageKey={item.id} title={item.name} buttonText="Manage" />) : <></>;
+    return { ...item, actions: action };
+  });
 
   // define Table columns
   const columns = [
@@ -94,8 +97,6 @@ function DataTable({ intl, data }) {
     },
   ];
 
-  console.log(sortableData.map(i => i.id));
-
   return (
     <div>
       <Table
@@ -103,7 +104,6 @@ function DataTable({ intl, data }) {
         columns={columns.map(column => ({
           ...column,
           onSort(direction) {
-            console.log('Sort in direction ', direction, column);
             sortableData.sort(
               (firstElement, secondElement) => sort(firstElement, secondElement, column.key, direction),
             );
