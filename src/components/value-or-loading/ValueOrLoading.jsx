@@ -11,7 +11,7 @@ function LoadingOrValue({ value }) {
 }
 
 LoadingOrValue.propTypes = {
-  value: PropType.element,
+  value: PropType.node,
 };
 
 LoadingOrValue.defaultProps = {

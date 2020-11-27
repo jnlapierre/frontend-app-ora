@@ -31,3 +31,15 @@ export const oraDataShape = PropTypes.objectOf(PropTypes.shape({
   done: PropTypes.number,
   status: PropTypes.string,
 }));
+
+export const oraSummaryDataShape = PropTypes.objectOf(PropTypes.shape({
+  units: PropTypes.number,
+  assessments: PropTypes.number,
+  total: PropTypes.number,
+  training: PropTypes.number,
+  peer: PropTypes.number,
+  self: PropTypes.number,
+  waiting: PropTypes.number,
+  staff: PropTypes.number,
+  done: PropTypes.number,
+}));

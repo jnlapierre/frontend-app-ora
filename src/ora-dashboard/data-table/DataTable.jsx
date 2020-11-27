@@ -1,67 +1,118 @@
 import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
 import React, { useEffect } from 'react';
+import { Table } from '@edx/paragon';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
-import LoadingOrValue from '../../components/value-or-loading/ValueOrLoading';
 import messages from './messages';
 import { fetchOraReports } from '../data/thunks';
 import { oraDataShape } from '../../data/constants';
+import EmbedORAModal from '../embed-ora-modal/EmbedORAModal';
+
+/**
+ * Sort implementation for Paragon Table
+ * @param {any} firstElement
+ * @param {any} secondElement
+ * @param {string} key
+ * @param {string} direction
+ */
+function sort(firstElement, secondElement, key, direction) {
+  const directionIsAsc = direction === 'asc';
+
+  if (firstElement[key] > secondElement[key]) {
+    return directionIsAsc ? 1 : -1;
+  } if (firstElement[key] < secondElement[key]) {
+    return directionIsAsc ? -1 : 1;
+  }
+  return 0;
+}
 
 function DataTable({ intl, data }) {
   const { courseId } = useParams();
   const dispatch = useDispatch();
   useEffect(() => {
-    Object.keys(data).map((blockId) => data[blockId].status || dispatch(fetchOraReports(courseId, blockId)));
+    if (Object.keys(data).length > 0) {
+      const blockId = Object.keys(data)[0];
+      if (!data[blockId].status) {
+        dispatch(fetchOraReports(courseId, blockId));
+      }
+    }
   }, [courseId, data]);
+
+  // create a copy of data for sortable Table
+  const sortableData = Object.values(data).slice().map(item => {
+    const action = <EmbedORAModal usageKey={item.id} title={item.name} buttonText="Manage" />;
+    return { ...item, actions: action };
+  });
+
+  // define Table columns
+  const columns = [
+    {
+      label: intl.formatMessage(messages.unit_name),
+      key: 'vertical',
+      columnSortable: true,
+    },
+    {
+      label: intl.formatMessage(messages.assessment),
+      key: 'name',
+      columnSortable: true,
+    },
+    {
+      label: intl.formatMessage(messages.total_responses),
+      key: 'total',
+      columnSortable: true,
+    },
+    {
+      label: intl.formatMessage(messages.training),
+      key: 'training',
+      columnSortable: true,
+    },
+    {
+      label: intl.formatMessage(messages.peer),
+      key: 'peer',
+      columnSortable: true,
+    },
+    {
+      label: intl.formatMessage(messages.self),
+      key: 'self',
+      columnSortable: true,
+    },
+    {
+      label: intl.formatMessage(messages.waiting),
+      key: 'waiting',
+      columnSortable: true,
+    },
+    {
+      label: intl.formatMessage(messages.staff),
+      key: 'staff',
+      columnSortable: true,
+    },
+    {
+      label: intl.formatMessage(messages.final_grade_received),
+      key: 'done',
+      columnSortable: true,
+    },
+    {
+      label: '',
+      key: 'actions',
+    },
+  ];
+
   return (
-    <table className="table">
-      <thead>
-        <tr>
-          <th>
-            {intl.formatMessage(messages.unit_name)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.assessment)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.total_responses)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.training)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.peer)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.self)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.waiting)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.staff)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.final_grade_received)}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {Object.values(data).map(((block) => (
-          <tr key={block.id}>
-            <td>{block.vertical}</td>
-            <td>{block.name}</td>
-            <td><LoadingOrValue value={block.total} /></td>
-            <td><LoadingOrValue value={block.training} /></td>
-            <td><LoadingOrValue value={block.peer} /></td>
-            <td><LoadingOrValue value={block.self} /></td>
-            <td><LoadingOrValue value={block.waiting} /></td>
-            <td><LoadingOrValue value={block.staff} /></td>
-            <td><LoadingOrValue value={block.done} /></td>
-          </tr>
-        )))}
-      </tbody>
-    </table>
+    <div>
+      <Table
+        data={sortableData}
+        columns={columns.map(column => ({
+          ...column,
+          onSort(direction) {
+            sortableData.sort(
+              (firstElement, secondElement) => sort(firstElement, secondElement, column.key, direction),
+            );
+          },
+        }))}
+        tableSortable
+      />
+      {/* {iframes} */}
+    </div>
   );
 }
 DataTable.propTypes = {

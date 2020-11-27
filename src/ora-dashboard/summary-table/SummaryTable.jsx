@@ -1,46 +1,58 @@
 import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
 import React from 'react';
+import { Table } from '@edx/paragon';
 import messages from './messages';
+import { oraSummaryDataShape } from '../../data/constants';
 
-function SummaryTable({ intl }) {
+function SummaryTable({ intl, data }) {
+  const columns = [
+    {
+      label: intl.formatMessage(messages.units),
+      key: 'units',
+    },
+    {
+      label: intl.formatMessage(messages.assessments),
+      key: 'assessments',
+    },
+    {
+      label: intl.formatMessage(messages.total_responses),
+      key: 'total',
+    },
+    {
+      label: intl.formatMessage(messages.training),
+      key: 'training',
+    },
+    {
+      label: intl.formatMessage(messages.peer),
+      key: 'peer',
+    },
+    {
+      label: intl.formatMessage(messages.self),
+      key: 'self',
+    },
+    {
+      label: intl.formatMessage(messages.waiting),
+      key: 'waiting',
+    },
+    {
+      label: intl.formatMessage(messages.staff),
+      key: 'staff',
+    },
+    {
+      label: intl.formatMessage(messages.final_grade_received),
+      key: 'done',
+    },
+  ];
   return (
-    <table className="table">
-      <thead>
-        <tr>
-          <th>
-            {intl.formatMessage(messages.units)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.assessments)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.total_responses)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.training)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.peer)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.self)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.waiting)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.staff)}
-          </th>
-          <th>
-            {intl.formatMessage(messages.final_grade_received)}
-          </th>
-        </tr>
-      </thead>
-    </table>
+    <Table
+      data={[data]}
+      columns={columns}
+    />
   );
 }
 SummaryTable.propTypes = {
   intl: intlShape.isRequired,
+  data: oraSummaryDataShape.isRequired,
 };
 
 export default injectIntl(SummaryTable);
